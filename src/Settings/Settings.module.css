@@ -1,0 +1,39 @@
+.display {
+    margin: 15px;
+    width: calc(100% - 36px);
+    height: 150px;
+    border: 3px solid #63d9fb;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    color: red
+}
+
+.label {
+    color: #63d9fb;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.input {
+    height: 30px;
+    border: 2px solid #147f9e;
+    border-radius: 10px;
+    margin-left: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    width: 130px;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.error {
+    background-color: rgb(238, 155, 172);
+    border: 2px solid #f55b76;
+}
+

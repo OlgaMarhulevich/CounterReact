@@ -1,0 +1,22 @@
+.counter {
+  border: 3px solid #63d9fb;
+  width: 400px;
+  height: 300px;
+  margin: 100px auto;
+  border-radius: 10px;
+  color: #2a2c35;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 10px;
+  border: 3px solid #63d9fb;
+  height: 100px;
+  margin: 15px;
+}
+
+.wrapper {
+  display: flex;
+}

@@ -1,0 +1,17 @@
+.btn {
+    font-size: 30px;
+    padding: 5px 0;
+    width: 140px;
+    font-weight: bold;
+    border-radius: 10px;
+    background-color: #63d9fb;
+    color: #2a2c35;
+    cursor: pointer;
+}
+
+.classDisabled {
+    background-color: #407284;
+    cursor: auto;
+    opacity: 0.3;
+}
+
