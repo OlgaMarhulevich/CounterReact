@@ -9,18 +9,6 @@ function App() {
     let [startValue, setStartValue] = useState(0);
     let [maxValue, setMaxValue] = useState(5);
 
-/*    useEffect(() => {
-        const startValueFromStorage = localStorage.getItem('start value')
-        const maxValueFromStorage = localStorage.getItem('max value')
-        startValueFromStorage && setStartValue(JSON.parse(startValueFromStorage))
-        maxValueFromStorage && setMaxValue(JSON.parse(maxValueFromStorage))
-    }, [])
-
-    useEffect(() => {
-        localStorage.setItem('start value', JSON.stringify(startValue))
-        localStorage.setItem('max value', JSON.stringify(maxValue))
-    }, [startValue, maxValue])*/
-
     let [counter, setCounter] = useState(startValue);
 
     let [currentStartValue, setCurrentStartValue] = useState(startValue);
@@ -29,6 +17,24 @@ function App() {
     let [message, setMessage] = useState(false)
     let [error, setError] = useState(false)
     let [disabled, setDisabled] = useState(true)
+
+    useEffect(() => {
+        const startValueFromStorage = localStorage.getItem('start value')
+        const maxValueFromStorage = localStorage.getItem('max value')
+        if (startValueFromStorage) {
+            setStartValue(JSON.parse(startValueFromStorage))
+            setCurrentStartValue(JSON.parse(startValueFromStorage))
+        }
+        if (maxValueFromStorage) {
+            setMaxValue(JSON.parse(maxValueFromStorage))
+            setCurrenMaxValue(JSON.parse(maxValueFromStorage))
+        }
+    }, [])
+
+    useEffect(() => {
+        localStorage.setItem('start value', JSON.stringify(startValue))
+        localStorage.setItem('max value', JSON.stringify(maxValue))
+    }, [startValue, maxValue])
 
     const onClickInc = () => {
         const inc = counter + 1;
