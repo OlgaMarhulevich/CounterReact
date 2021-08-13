@@ -4,28 +4,14 @@ import s from './Button.module.css'
 type ButtonPropsType = {
     title: string
     onClickCallback: () => void
-    counter?: number
-    maxValue?: number
-    startValue?: number
-    currenMaxValue?: number
-    currentStartValue?: number
-    error: boolean
-    disabled?: boolean
+    disabled: boolean
 }
 
 export const Button = (props: ButtonPropsType) => {
-    let disabled = false;
-    let classDisabled = '';
 
-    if ((props.counter === props.maxValue && props.title === 'inc') ||
-        (props.counter === props.startValue && props.title === 'reset') ||
-        (props.error) || (props.disabled && props.title === 'set')) {
-        disabled = true;
-        classDisabled = s.classDisabled;
-    }
     return (
-        <button disabled={disabled}
-                className={`${s.btn} ${classDisabled}`}
+        <button disabled={props.disabled}
+                className={`${s.btn} ${props.disabled ? s.classDisabled : ''}`}
                 onClick={() => props.onClickCallback()}>
 
             {props.title}

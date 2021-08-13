@@ -14,18 +14,12 @@ function App() {
     let [currentStartValue, setCurrentStartValue] = useState(startValue);
     let [currenMaxValue, setCurrenMaxValue] = useState(maxValue);
 
-    let [message, setMessage] = useState(false)
-    let [error, setError] = useState(false)
-    let [disabled, setDisabled] = useState(true)
-
     useEffect(() => {
         const startValueFromStorage = localStorage.getItem('start value')
         const maxValueFromStorage = localStorage.getItem('max value')
-        if (startValueFromStorage) {
+        if (startValueFromStorage && maxValueFromStorage) {
             setStartValue(JSON.parse(startValueFromStorage))
             setCurrentStartValue(JSON.parse(startValueFromStorage))
-        }
-        if (maxValueFromStorage) {
             setMaxValue(JSON.parse(maxValueFromStorage))
             setCurrenMaxValue(JSON.parse(maxValueFromStorage))
         }
@@ -35,6 +29,14 @@ function App() {
         localStorage.setItem('start value', JSON.stringify(startValue))
         localStorage.setItem('max value', JSON.stringify(maxValue))
     }, [startValue, maxValue])
+
+    useEffect(() => { setCounter(startValue)
+    }, [startValue])
+
+    const onClickSet = () => {
+        setStartValue(currentStartValue)
+        setMaxValue(currenMaxValue)
+    }
 
     const onClickInc = () => {
         const inc = counter + 1;
@@ -49,64 +51,46 @@ function App() {
         setCounter(startValue)
     }
 
-    useEffect(() => {
-        setCounter(startValue)
-    }, [startValue])
+    const valuesAreSet = currentStartValue === startValue && currenMaxValue === maxValue
 
-    const onClickSet = () => {
-        setStartValue(currentStartValue)
-        setMaxValue(currenMaxValue)
-        setMessage(false)
-        setDisabled(true)
-    }
+    const error = (currentStartValue < 0 || currentStartValue >= currenMaxValue) ? 'Incorrect values!' : ''
 
-    return (
+        return (
         <div className={'wrapper'}>
             <div className={'counter'}>
                 <Settings
-                    setMessage={setMessage}
                     currentStartValue={currentStartValue}
                     currenMaxValue={currenMaxValue}
                     setCurrenMaxValue={setCurrenMaxValue}
                     setCurrentStartValue={setCurrentStartValue}
-                    setError={setError}
-                    setDisabled={setDisabled}/>
+                    error={error}
+                />
 
                 <div className={'buttons'}>
                     <Button
-                        currentStartValue={currentStartValue}
-                        currenMaxValue={currenMaxValue}
                         title={'set'}
                         onClickCallback={onClickSet}
-                        error={error}
-                        disabled={disabled}/>
+                        disabled={valuesAreSet}/>
                 </div>
             </div>
 
             <div className={'counter'}>
                 <Display
-                    message={message}
-                    startValue={startValue}
-                    maxValue={maxValue}
                     counter={counter}
+                    disabled={!valuesAreSet}
+                    red={counter === maxValue}
                     error={error}/>
 
                 <div className={'buttons'}>
                     <Button
-                        startValue={startValue}
-                        maxValue={maxValue}
-                        counter={counter}
                         title={'inc'}
                         onClickCallback={onClickInc}
-                        error={error}/>
+                        disabled={!valuesAreSet || counter === maxValue}/>
 
                     <Button
-                        startValue={startValue}
-                        maxValue={maxValue}
-                        counter={counter}
                         title={'reset'}
                         onClickCallback={onClickReset}
-                        error={error}/>
+                        disabled={!valuesAreSet || counter === startValue}/>
                 </div>
             </div>
         </div>
