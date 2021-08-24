@@ -6,29 +6,22 @@ type SettingsPropsType = {
     setCurrentStartValue: (value: number) => void
     currenMaxValue: number
     currentStartValue: number
-    error: string
+    error: boolean
 }
 
 export const Settings = (props: SettingsPropsType) => {
 
-    const onChangeMax = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const currentMaxValue = +e.currentTarget.value
-        props.setCurrenMaxValue(currentMaxValue)
-    }
-    const onChangeStart = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const currentStartValue = +e.currentTarget.value
-        props.setCurrentStartValue(currentStartValue)
-    }
+
 
     return (
         <div className={s.display}>
             <label className={s.label}> max value:
                 <input className={`${s.input} ${props.error ? s.error : ''}`} type='number' value={props.currenMaxValue}
-                       onChange={onChangeMax}/>
+                       onChange={(e) => props.setCurrenMaxValue(e.currentTarget.valueAsNumber)}/>
             </label>
             <label className={s.label}> start value:
                 <input className={`${s.input} ${props.error ? s.error : ''}`} type='number' value={props.currentStartValue}
-                       onChange={onChangeStart}/>
+                       onChange={(e) => props.setCurrentStartValue(+e.currentTarget.value)}/>
             </label>
         </div>
     )

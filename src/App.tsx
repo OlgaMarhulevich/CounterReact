@@ -1,100 +1,92 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Display} from "./Display/Display";
 import {Button} from "./Button/Button";
 import {Settings} from './Settings/Settings';
+import {useDispatch, useSelector} from "react-redux";
+import {
+    getValuesThunkCreator,
+    incValueAC,
+    resetValueAC,
+    setValuesThunkCreator
+} from "./redux/counterReducer";
+import {AppStateType} from "./redux/store";
 
 function App() {
 
-    let [startValue, setStartValue] = useState(0);
-    let [maxValue, setMaxValue] = useState(5);
-
-    let [counter, setCounter] = useState(startValue);
-
+    //useSelectors
+    const counter = useSelector<AppStateType, number>(state => state.counter.counter)
+    const startValue = useSelector<AppStateType, number>(state => state.counter.startValue)
+    const maxValue = useSelector<AppStateType, number>(state => state.counter.maxValue)
+    //useDispatch
+    const dispatch = useDispatch()
+    //useState
     let [currentStartValue, setCurrentStartValue] = useState(startValue);
     let [currenMaxValue, setCurrenMaxValue] = useState(maxValue);
-
+    //useEffect
     useEffect(() => {
-        const startValueFromStorage = localStorage.getItem('start value')
-        const maxValueFromStorage = localStorage.getItem('max value')
-        if (startValueFromStorage && maxValueFromStorage) {
-            setStartValue(JSON.parse(startValueFromStorage))
-            setCurrentStartValue(JSON.parse(startValueFromStorage))
-            setMaxValue(JSON.parse(maxValueFromStorage))
-            setCurrenMaxValue(JSON.parse(maxValueFromStorage))
-        }
+        dispatch(getValuesThunkCreator())
     }, [])
-
     useEffect(() => {
-        localStorage.setItem('start value', JSON.stringify(startValue))
-        localStorage.setItem('max value', JSON.stringify(maxValue))
+        setCurrentStartValue(startValue)
+        setCurrenMaxValue(maxValue)
     }, [startValue, maxValue])
 
-    useEffect(() => { setCounter(startValue)
-    }, [startValue])
-
-    const onClickSet = () => {
-        setStartValue(currentStartValue)
-        setMaxValue(currenMaxValue)
+    //onClickHandlers
+    const incHandler = () => {
+        dispatch(incValueAC())
     }
-
-    const onClickInc = () => {
-        const inc = counter + 1;
-        if (inc <= maxValue && inc > startValue) {
-            setCounter(inc);
-        } else if (inc > maxValue) {
-            setCounter(counter);
-        }
+    const setHandler = () => {
+        dispatch(setValuesThunkCreator(currentStartValue, currenMaxValue))
     }
-
-    const onClickReset = () => {
-        setCounter(startValue)
+    const resetHandler = () => {
+        dispatch(resetValueAC())
     }
 
     const valuesAreSet = currentStartValue === startValue && currenMaxValue === maxValue
+    const error = (currentStartValue < 0 || currentStartValue >= currenMaxValue)
 
-    const error = (currentStartValue < 0 || currentStartValue >= currenMaxValue) ? 'Incorrect values!' : ''
+    return (<>
+            <div className={'wrapper'}>
+                <div className={'counter'}>
+                    <Settings
+                        currentStartValue={currentStartValue}
+                        currenMaxValue={currenMaxValue}
+                        setCurrenMaxValue={setCurrenMaxValue}
+                        setCurrentStartValue={setCurrentStartValue}
+                        error={error}
+                    />
 
-        return (
-        <div className={'wrapper'}>
-            <div className={'counter'}>
-                <Settings
-                    currentStartValue={currentStartValue}
-                    currenMaxValue={currenMaxValue}
-                    setCurrenMaxValue={setCurrenMaxValue}
-                    setCurrentStartValue={setCurrentStartValue}
-                    error={error}
-                />
+                    <div className={'buttons'}>
+                        <Button
+                            title={'set'}
+                            onClickCallback={setHandler}
+                            disabled={valuesAreSet || error}/>
+                    </div>
+                </div>
 
-                <div className={'buttons'}>
-                    <Button
-                        title={'set'}
-                        onClickCallback={onClickSet}
-                        disabled={valuesAreSet}/>
+                <div className={'counter'}>
+                    <Display
+                        counter={counter}
+                        disabled={!valuesAreSet}
+                        maxValue={maxValue}
+                        error={error}/>
+
+                    <div className={'buttons'}>
+                        <Button
+                            title={'inc'}
+                            onClickCallback={incHandler}
+                            disabled={!valuesAreSet || counter === maxValue || error}/>
+
+                        <Button
+                            title={'reset'}
+                            onClickCallback={resetHandler}
+                            disabled={!valuesAreSet || counter === startValue || error}/>
+                    </div>
                 </div>
             </div>
-
-            <div className={'counter'}>
-                <Display
-                    counter={counter}
-                    disabled={!valuesAreSet}
-                    red={counter === maxValue}
-                    error={error}/>
-
-                <div className={'buttons'}>
-                    <Button
-                        title={'inc'}
-                        onClickCallback={onClickInc}
-                        disabled={!valuesAreSet || counter === maxValue}/>
-
-                    <Button
-                        title={'reset'}
-                        onClickCallback={onClickReset}
-                        disabled={!valuesAreSet || counter === startValue}/>
-                </div>
-            </div>
-        </div>
-    );
+        </>
+    )
 }
 
 export default App;
