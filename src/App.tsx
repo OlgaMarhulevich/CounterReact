@@ -20,41 +20,32 @@ function App() {
     const maxValue = useSelector<AppStateType, number>(state => state.counter.maxValue)
     //useDispatch
     const dispatch = useDispatch()
-    //useState
-    let [currentStartValue, setCurrentStartValue] = useState(startValue);
-    let [currenMaxValue, setCurrenMaxValue] = useState(maxValue);
     //useEffect
     useEffect(() => {
         dispatch(getValuesThunkCreator())
     }, [])
-    useEffect(() => {
-        setCurrentStartValue(startValue)
-        setCurrenMaxValue(maxValue)
-    }, [startValue, maxValue])
+    //useState
+    let [valuesAreSet, setValuesAreSet] = useState(true)
+    const error = (startValue < 0 || startValue >= maxValue)
 
     //onClickHandlers
     const incHandler = () => {
         dispatch(incValueAC())
     }
     const setHandler = () => {
-        dispatch(setValuesThunkCreator(currentStartValue, currenMaxValue))
+        dispatch(setValuesThunkCreator())
+        setValuesAreSet(true)
     }
     const resetHandler = () => {
         dispatch(resetValueAC())
     }
 
-    const valuesAreSet = currentStartValue === startValue && currenMaxValue === maxValue
-    const error = (currentStartValue < 0 || currentStartValue >= currenMaxValue)
-
     return (<>
             <div className={'wrapper'}>
                 <div className={'counter'}>
                     <Settings
-                        currentStartValue={currentStartValue}
-                        currenMaxValue={currenMaxValue}
-                        setCurrenMaxValue={setCurrenMaxValue}
-                        setCurrentStartValue={setCurrentStartValue}
                         error={error}
+                        setValuesAreSet={setValuesAreSet}
                     />
 
                     <div className={'buttons'}>
@@ -67,9 +58,7 @@ function App() {
 
                 <div className={'counter'}>
                     <Display
-                        counter={counter}
                         disabled={!valuesAreSet}
-                        maxValue={maxValue}
                         error={error}/>
 
                     <div className={'buttons'}>

@@ -1,16 +1,19 @@
 import {Dispatch} from "react";
+import {AppStateType} from "./store";
 
 export enum ACTION_TYPES {
     INC_VALUE = "INC-VALUE",
-    SET_VALUE = "SET-VALUE",
     RESET_VALUE = "RESET-VALUE",
+    SET_VALUE_FROM_STORAGE = "SET-VALUE-FROM-STORAGE",
+    SET_START_VALUE = "SET-START-VALUE",
+    SET_MAX_VALUE = "SET-MAX-VALUE",
 }
 
 export type StateType = typeof initialState
 const initialState = {
-    counter: 1,
-    maxValue: 3,
-    startValue: 1,
+    counter: 0,
+    maxValue: 5,
+    startValue: 0,
 }
 
 export const counterReducer = (state: StateType = initialState, action: ActionType): StateType => {
@@ -20,50 +23,73 @@ export const counterReducer = (state: StateType = initialState, action: ActionTy
                 return {...state, counter: state.counter + 1}
             }
             return {...state}
-        case ACTION_TYPES.SET_VALUE:
-            return {...state, startValue: action.currentStartValue, maxValue: action.currentMaxValue, counter: action.currentStartValue}
         case ACTION_TYPES.RESET_VALUE:
             return {...state, counter: state.startValue}
+        case ACTION_TYPES.SET_VALUE_FROM_STORAGE:
+            return {...state, startValue: action.startValue, maxValue: action.maxValue, counter: action.startValue}
+        case ACTION_TYPES.SET_START_VALUE:
+            return {...state, startValue: action.startValue}
+        case ACTION_TYPES.SET_MAX_VALUE:
+            return {...state, maxValue: action.maxValue}
         default:
             return {...state}
     }
 }
 
 //ActionType
-export type ActionType = IncValueACType | SetValueACType | ResetValueACType
+export type ActionType = IncValueACType
+                        | ResetValueACType
+                        | SetValueFromLocalStorageACType
+                        | SetStartValueACType
+                        | SetMaxValueACType
 //ACTypes
 export type IncValueACType = {
     type: ACTION_TYPES.INC_VALUE
 }
-export type SetValueACType = {
-    type: ACTION_TYPES.SET_VALUE
-    currentStartValue: number
-    currentMaxValue: number
-}
 export type ResetValueACType = {
     type: ACTION_TYPES.RESET_VALUE
 }
+export type SetValueFromLocalStorageACType = {
+    type: ACTION_TYPES.SET_VALUE_FROM_STORAGE
+    startValue: number
+    maxValue: number
+}
+export type SetStartValueACType = {
+    type: ACTION_TYPES.SET_START_VALUE
+    startValue: number
+}
+export type SetMaxValueACType = {
+    type: ACTION_TYPES.SET_MAX_VALUE
+    maxValue: number
+}
+
 //AC
 export const incValueAC = (): IncValueACType => {
     return {type: ACTION_TYPES.INC_VALUE}
 }
-export const setValueAC = (currentStartValue: number, currentMaxValue: number): SetValueACType => {
-    return {type: ACTION_TYPES.SET_VALUE, currentStartValue, currentMaxValue}
-}
 export const resetValueAC = (): ResetValueACType => {
     return {type: ACTION_TYPES.RESET_VALUE}
 }
+export const setValueFromLocalStorageAC = (startValue: number, maxValue: number): SetValueFromLocalStorageACType => {
+    return {type: ACTION_TYPES.SET_VALUE_FROM_STORAGE, startValue, maxValue}
+}
+export const setStartValueAC = (startValue: number): SetStartValueACType => {
+    return {type: ACTION_TYPES.SET_START_VALUE, startValue}
+}
+export const setMaxValueAC = (maxValue: number): SetMaxValueACType => {
+    return {type: ACTION_TYPES.SET_MAX_VALUE, maxValue}
+}
 
 //thunk
-export const setValuesThunkCreator = (startValue: number, maxValue: number) => (dispatch: Dispatch<ActionType>) => {
-    localStorage.setItem('start value', JSON.stringify(startValue))
-    localStorage.setItem('max value', JSON.stringify(maxValue))
-    dispatch(setValueAC(startValue, maxValue))
+export const setValuesThunkCreator = () => (dispatch: Dispatch<ActionType>, getState: () => AppStateType) => {
+    localStorage.setItem('start value', JSON.stringify(getState().counter.startValue))
+    localStorage.setItem('max value', JSON.stringify(getState().counter.maxValue))
+    dispatch(resetValueAC())
 }
 export const getValuesThunkCreator = () => (dispatch: Dispatch<ActionType>) => {
     const startValue = localStorage.getItem('start value')
     const maxValue = localStorage.getItem('max value')
     if (startValue && maxValue) {
-        dispatch(setValueAC(JSON.parse(startValue), JSON.parse(maxValue)))
+        dispatch(setValueFromLocalStorageAC(JSON.parse(startValue), JSON.parse(maxValue)))
     }
 }
