@@ -4,12 +4,7 @@ import {Display} from "./Display/Display";
 import {Button} from "./Button/Button";
 import {Settings} from './Settings/Settings';
 import {useDispatch, useSelector} from "react-redux";
-import {
-    getValuesThunkCreator,
-    incValueAC,
-    resetValueAC,
-    setValuesThunkCreator
-} from "./redux/counterReducer";
+import {getValuesThunkCreator, incValueAC, resetValueAC, setValuesThunkCreator} from "./redux/counterReducer";
 import {AppStateType} from "./redux/store";
 
 function App() {
@@ -20,7 +15,7 @@ function App() {
     const maxValue = useSelector<AppStateType, number>(state => state.counter.maxValue)
     //useDispatch
     const dispatch = useDispatch()
-    //useEffect
+    //with thunk
     useEffect(() => {
         dispatch(getValuesThunkCreator())
     }, [])
@@ -33,7 +28,7 @@ function App() {
         dispatch(incValueAC())
     }
     const setHandler = () => {
-        dispatch(setValuesThunkCreator())
+        dispatch(setValuesThunkCreator()) //with thunk
         setValuesAreSet(true)
     }
     const resetHandler = () => {

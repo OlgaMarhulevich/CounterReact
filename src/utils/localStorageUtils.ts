@@ -1,6 +1,5 @@
 export default 1
-/*
-import {AppStateType} from "../redux/store";
+/*import {AppStateType} from "../redux/store";
 
 export const loadState = () => {
     try {
@@ -9,7 +8,13 @@ export const loadState = () => {
         if (startValue === null || maxValue === null) {
             return undefined;
         }
-        return [JSON.parse(startValue), JSON.parse(maxValue)];
+        return {
+            counter: {
+                counter: JSON.parse(startValue),
+                maxValue: JSON.parse(maxValue),
+                startValue: JSON.parse(startValue)
+            }
+        }
     } catch (err) {
         return undefined;
     }
@@ -18,7 +23,9 @@ export const loadState = () => {
 export const saveState = (state: AppStateType) => {
     try {
         const startValue = JSON.stringify(state.counter.startValue);
-        localStorage.setItem('state', serializedState);
+        const maxValue = JSON.stringify(state.counter.maxValue);
+        localStorage.setItem('start value', startValue);
+        localStorage.setItem('max value', maxValue);
     } catch {
         // ignore write errors
     }
